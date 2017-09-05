@@ -33,7 +33,6 @@ char * read_line() {
 
     while(c != '\n' && c != EOF) {
 
-        assert(text_index != UINT_MAX);
 
         if(text_index%1023 ==0) {
             text = realloc(text, sizeof(char) * (text_index+1024));

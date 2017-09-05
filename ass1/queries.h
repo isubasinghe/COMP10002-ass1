@@ -24,7 +24,8 @@ typedef struct {
 
 
 int is_valid_query(char * query) {
-    for(int i=0; i < strlen(query); i++) {
+    for(unsigned int i=0; i < strlen(query); i++) {
+
         if(!isalphal(query[i]) && !isdigit(query[i])) {
             return 0;
         }
@@ -50,7 +51,6 @@ queries_t process_queries(int argc, char * argv[]) {
                 printf("S1: %s: invalid character(s) in query\n", argv[i]);
             }else {
 
-                assert(queries.size != UINT_MAX);
 
                 queries.queries[i-1] = argv[i];
                 queries.size++;
@@ -71,11 +71,11 @@ void process_lines(int argc, char * argv[]) {
 
     while((text = read_line())!= NULL) {
 
-        assert(line != UINT_MAX);
+        int words = 0;
+        size_t bytes = strlen(text);
 
-        int words = 0, bytes = strlen(text);
         printf("%s\n", text);
-        printf("S2: line = %d, bytes = %d, words = %d\n", line, bytes, words);
+        printf("S2: line = %d, bytes = %zu, words = %d\n", line, bytes, words);
         line++;
         free(text);
 
