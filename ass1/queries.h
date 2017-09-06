@@ -13,11 +13,13 @@
 #include "mystdio.h"
 #include "myctypes.h"
 #include "scoring.h"
+#include "mystrings.h"
 
 
 typedef struct {
     char ** queries;
-    unsigned long size;
+    int size;
+    int errorc;
 } queries_t;
 
 
@@ -37,6 +39,8 @@ queries_t process_queries(int argc, char * argv[]) {
     queries_t queries;
 
     queries.queries = malloc(sizeof(char *) * (argc-1));
+    queries.size = 0;
+    queries.errorc = 0;
 
     if(argc >= 1) {
         printf("S1: query =");
@@ -49,8 +53,8 @@ queries_t process_queries(int argc, char * argv[]) {
         for(int i=1; i < argc; i++) {
             if(!is_valid_query(argv[i])) {
                 printf("S1: %s: invalid character(s) in query\n", argv[i]);
+                queries.errorc++;
             }else {
-
 
                 queries.queries[i-1] = argv[i];
                 queries.size++;
@@ -71,7 +75,8 @@ void process_lines(int argc, char * argv[]) {
 
     while((text = read_line())!= NULL) {
 
-        int words = 0;
+        int words = words_count(text);
+
         size_t bytes = strlen(text);
 
         printf("%s\n", text);
