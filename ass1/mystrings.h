@@ -37,16 +37,13 @@ words_loc_t get_words(char *);
 
 
 int has_prefix(char * prefix, char * text, int low, int high) {
-
+    if(strlen(prefix) > high - low + 1) {
+        return 0;
+    }
 }
 
 double score(int argc, char *argv[], char * text) {
-    double sum = 0;
-    words_loc_t words_loc = get_words(text);
 
-    for(int i = 1; i < argc; i++) {
-
-    }
 }
 
 // remember to free the pointer word_loc_t.words.
