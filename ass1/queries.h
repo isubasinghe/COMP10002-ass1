@@ -12,22 +12,7 @@
 
 #include "mystdio.h"
 #include "myctypes.h"
-#include "scoring.h"
 #include "mystrings.h"
-
-
-typedef struct {
-    char ** queries;
-    int size;
-    int errorc;
-} queries_t;
-
-typedef struct {
-    char * line;
-    double score;
-
-} line_t;
-
 
 
 

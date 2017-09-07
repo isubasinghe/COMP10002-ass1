@@ -5,10 +5,17 @@
 #ifndef ASS1_MYSTRINGS_H
 #define ASS1_MYSTRINGS_H
 
+
+// I had to define this as
+// as int ascii_atrophe = ''',
+// is invalid
 #define ASCII_ATROPHE 39
 
 #include <stdio.h>
 #include <string.h>
+
+
+
 
 
 typedef struct {
@@ -22,16 +29,39 @@ typedef struct {
 } words_loc_t;
 
 
+int has_prefix(char *, char *, int, int);
+
+double score(int, char *[], char *);
+
+words_loc_t get_words(char *);
+
+
+int has_prefix(char * prefix, char * text, int low, int high) {
+
+}
+
+double score(int argc, char *argv[], char * text) {
+    double sum = 0;
+    words_loc_t words_loc = get_words(text);
+
+    for(int i = 1; i < argc; i++) {
+
+    }
+}
+
+// remember to free the pointer word_loc_t.words.
 words_loc_t get_words(char * text) {
-    //words_t words;
+
+    words_loc_t words_loc;
+    words_loc.words = NULL;
+    words_loc.size = 0;
 
     if(text == NULL) {
-        //words.words = NULL;
-        //words.size = -1;
+        return words_loc;
     }
 
-
-    //words.words = malloc(sizeof(char *) * 1024);
+    // Allocate 1024 instances of a pointer.
+    words_loc.words = malloc(sizeof(char *) * 1024);
 
     int prevchar = ' ';
     int starting_index = 0;
@@ -39,7 +69,7 @@ words_loc_t get_words(char * text) {
     // for a bit of efficiency, the length of the string text is calculated once, instead of every iteration.
     size_t tlen = strlen(text);
 
-
+    // make sure that the character we are starting off at isn't a word terminator.
     for(int i=0; prevchar == ' ' || prevchar == ASCII_ATROPHE || prevchar == '.' || prevchar == '-' && i < tlen;i++) {
         prevchar = text[i];
         starting_index = i;
@@ -49,35 +79,38 @@ words_loc_t get_words(char * text) {
     // indicate the start of a word
     int wstart = starting_index;
     // indicate the end of a word
-    int wend = starting_index;
-    int wcount = 0;
+    int wend = wstart;
 
-
-    printf("tlen = %zu\n", tlen);
 
     for(int i = starting_index + 1; i < tlen +1; i++) {
         prevchar = text[i-1];
 
-        // Lets say that if a '.' is detected, everything to the left
-        // is a word.
 
         // check if what the project defines as the terminator for a word is reached.
-        int terminator_met = text[i] == ' ' || text[i] == 39 || text[i] == '-' || text[i] == '.' || text[i] == '\0';
-        // furthermore check to make sure that the previous characters weren't a word terminator.
+        int terminator_met = text[i] == ' ' || text[i] == ASCII_ATROPHE || text[i] == '-' || text[i] == '.' || text[i] == '\0';
+        // furthermore check to make sure that the previous characters weren't a word terminator,
+        // this indicates the end of a word.
         int prevchar_not_terminator = prevchar != ' ' && prevchar != ASCII_ATROPHE && prevchar != '-' && prevchar != '.';
 
         if(terminator_met && prevchar_not_terminator) {
-            // increment the counter for the number of words.
-            wcount++;
+
             //since we have reached what we have defined to be an indicator for
             // the end of the word, the character before it must have been the end of the word
             wend = i -1;
 
-            //Debuging stuff
-            for(int j=wstart; j <= wend; j++) {
-                printf("%c", text[j]);
+            if(words_loc.size%1023 == 0) {
+                words_loc.words = realloc(words_loc.words, sizeof(char *) * (1024 + words_loc.size));
+                if(words_loc.words == NULL) {
+                    perror("in function get_words: out of memory");
+                    words_loc.size = 0;
+                    return words_loc;
+                }
             }
-            printf("\n");
+
+            words_loc.words[words_loc.size].start = wstart;
+            words_loc.words[words_loc.size].end = wend;
+
+            words_loc.size++;
 
             // If the character we are at right now isn't the last,
             // we assume the next character is the start of a new word.
@@ -96,9 +129,7 @@ words_loc_t get_words(char * text) {
 
 
     }
-    printf("wcount = %d\n", wcount);
-
-    //return words;
+    return words_loc;
 }
 
 #endif //ASS1_MYSTRINGS_H

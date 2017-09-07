@@ -43,7 +43,7 @@ char * read_line() {
 
     // Check if we have enough memory.
     if(text == NULL) {
-        perror("out of memory\n");
+        perror("in function read_line: out of memory\n");
         // return a null pointer, to indicate
         // we have run out of memory.
         return NULL;

@@ -1,3 +1,5 @@
+//
+
 #include <stdio.h>
 
 #include "queries.h"
@@ -38,7 +40,7 @@ int main(int argc, char * argv[]) {
     }
     printf("\n");
     */
-    get_words("-  Hello asd sd, 'I've  ");
+
 
     //process_lines(argc, argv);
 }
