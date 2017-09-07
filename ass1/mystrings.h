@@ -4,50 +4,101 @@
 
 #ifndef ASS1_MYSTRINGS_H
 #define ASS1_MYSTRINGS_H
+
+#define ASCII_ATROPHE 39
+
 #include <stdio.h>
 #include <string.h>
 
-int getalnum(char * text) {
-    size_t len = strlen(text);
 
-    for(int i=0; i < len; i++) {
-        if(text[i] == EOF) {
-            return -1;
-        }else if(text[i] != ' ') {
-            return i;
-        }
-    }
-    return -1;
-}
+typedef struct {
+    int start;
+    int end;
+} word_loc_t;
 
-int words_count(char * text) {
+typedef struct {
+    word_loc_t * words;
+    int size;
+} words_loc_t;
 
-    int count = 0;
 
-    size_t len = strlen(text);
+words_loc_t get_words(char * text) {
+    //words_t words;
 
-    if(len == 0) {return 0;}
-
-    int prevchar = getalnum(text);
-
-    if(prevchar == -1) {return 0;}
-
-    if(text[len-1] == ' ') {
-        count--;
+    if(text == NULL) {
+        //words.words = NULL;
+        //words.size = -1;
     }
 
-    for(int i=prevchar; i < len + 1; i++) {
-        if(text[i] == '\0') {
-            count++;
-            return count;
-        }else if((text[i] == ' ' && prevchar != ' ') ) {
-            count++;
-        }
+
+    //words.words = malloc(sizeof(char *) * 1024);
+
+    int prevchar = ' ';
+    int starting_index = 0;
+
+    // for a bit of efficiency, the length of the string text is calculated once, instead of every iteration.
+    size_t tlen = strlen(text);
+
+
+    for(int i=0; prevchar == ' ' || prevchar == ASCII_ATROPHE || prevchar == '.' || prevchar == '-' && i < tlen;i++) {
         prevchar = text[i];
+        starting_index = i;
+    }
+
+
+    // indicate the start of a word
+    int wstart = starting_index;
+    // indicate the end of a word
+    int wend = starting_index;
+    int wcount = 0;
+
+
+    printf("tlen = %zu\n", tlen);
+
+    for(int i = starting_index + 1; i < tlen +1; i++) {
+        prevchar = text[i-1];
+
+        // Lets say that if a '.' is detected, everything to the left
+        // is a word.
+
+        // check if what the project defines as the terminator for a word is reached.
+        int terminator_met = text[i] == ' ' || text[i] == 39 || text[i] == '-' || text[i] == '.' || text[i] == '\0';
+        // furthermore check to make sure that the previous characters weren't a word terminator.
+        int prevchar_not_terminator = prevchar != ' ' && prevchar != ASCII_ATROPHE && prevchar != '-' && prevchar != '.';
+
+        if(terminator_met && prevchar_not_terminator) {
+            // increment the counter for the number of words.
+            wcount++;
+            //since we have reached what we have defined to be an indicator for
+            // the end of the word, the character before it must have been the end of the word
+            wend = i -1;
+
+            //Debuging stuff
+            for(int j=wstart; j <= wend; j++) {
+                printf("%c", text[j]);
+            }
+            printf("\n");
+
+            // If the character we are at right now isn't the last,
+            // we assume the next character is the start of a new word.
+            if(i < tlen -1) {
+                wstart = i + 1;
+                wend = i + 1;
+            }
+        // check if the character text[i] is not what we defined to be a word terminator and
+        // check if the previous character was a word terminator.
+        // this indicates a new word has started.
+        }else if(!terminator_met && !prevchar_not_terminator) {
+            // index starting point for the new word.
+            wstart = i;
+        }
+
+
 
     }
-    return count;
+    printf("wcount = %d\n", wcount);
 
+    //return words;
 }
 
 #endif //ASS1_MYSTRINGS_H

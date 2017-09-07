@@ -22,6 +22,12 @@ typedef struct {
     int errorc;
 } queries_t;
 
+typedef struct {
+    char * line;
+    double score;
+
+} line_t;
+
 
 
 
@@ -35,53 +41,31 @@ int is_valid_query(char * query) {
     return 1;
 }
 
-queries_t process_queries(int argc, char * argv[]) {
-    queries_t queries;
 
-    queries.queries = malloc(sizeof(char *) * (argc-1));
-    queries.size = 0;
-    queries.errorc = 0;
 
-    if(argc >= 1) {
-        printf("S1: query =");
-        for(int i=1; i < argc; i++) {
-            printf(" %s", argv[i]);
-        }
 
-        printf("\n");
-
-        for(int i=1; i < argc; i++) {
-            if(!is_valid_query(argv[i])) {
-                printf("S1: %s: invalid character(s) in query\n", argv[i]);
-                queries.errorc++;
-            }else {
-
-                queries.queries[i-1] = argv[i];
-                queries.size++;
-            }
-        }
-    }
-
-    return queries;
-
-}
 
 
 
 
 void process_lines(int argc, char * argv[]) {
+
+
+
     char * text = NULL;
-    unsigned int line = 1;
+
+    // line counter
+    unsigned int linec = 1;
 
     while((text = read_line())!= NULL) {
 
-        int words = words_count(text);
+        int words = 0;
 
         size_t bytes = strlen(text);
-
+        printf("---\n");
         printf("%s\n", text);
-        printf("S2: line = %d, bytes = %zu, words = %d\n", line, bytes, words);
-        line++;
+        printf("S2: line = %d, bytes = %zu, words = %d\n", linec, bytes, words);
+        linec++;
         free(text);
 
     }
