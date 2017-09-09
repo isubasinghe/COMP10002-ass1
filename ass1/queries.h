@@ -14,6 +14,10 @@
 #include "myctypes.h"
 #include "mystrings.h"
 
+int is_valid_query(char *);
+
+void process_lines(int, char *[]);
+
 
 
 int is_valid_query(char * query) {
@@ -43,15 +47,21 @@ void process_lines(int argc, char * argv[]) {
     unsigned int linec = 1;
 
     while((text = read_line())!= NULL) {
-
-        int words = 0;
-
+        if(text[0] == '\n') {
+            linec++;
+            free(text);
+            continue;
+        }
         size_t bytes = strlen(text);
         printf("---\n");
         printf("%s\n", text);
-        printf("S2: line = %d, bytes = %zu, words = %d\n", linec, bytes, words);
+        words_loc_t words_loc = get_words(text);
+        printf("S2: line = %d, bytes = %zu, words = %d\n", linec, bytes, words_loc.size);
+        printf("S3: line = %d, score = %0.03f\n", linec, score(argc, argv, text, words_loc));
         linec++;
+
         free(text);
+        free(words_loc.word_loc);
 
     }
 }

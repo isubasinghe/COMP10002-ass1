@@ -8,6 +8,8 @@
 #include <string.h>
 #include <ctype.h>
 
+int isalphal(int);
+
 // Checks if a character is a lowercase
 // alphabetic character.
 int isalphal(int c) {

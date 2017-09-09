@@ -12,6 +12,10 @@
 #include <assert.h>
 #include <limits.h>
 
+int mygetchar();
+
+char * read_line();
+
 int mygetchar() {
 
     int c = getchar();
@@ -35,10 +39,9 @@ char * read_line() {
     // another 1024 bytes..
     char * text = malloc(sizeof(char)*1024);
 
-    // If it is just an empty line
-    // ignore it.
-    while(c == '\n') {
-        c = mygetchar();
+    if (c == '\n') {
+        text[0] = '\n';
+        return text;
     }
 
     // Check if we have enough memory.

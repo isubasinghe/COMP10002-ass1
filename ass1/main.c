@@ -39,8 +39,21 @@ int main(int argc, char * argv[]) {
         printf(" %s", argv[i]);
     }
     printf("\n");
+
+
+
+
+    process_lines(argc, argv);
     */
 
+    char * text = "Mercia and Northumbria--\"'";
+    words_loc_t words_loc = get_words(text);
 
-    //process_lines(argc, argv);
+    for(int i = 0; i < words_loc.size; i++) {
+        for(int j=words_loc.word_loc[i].start; j <= words_loc.word_loc[i].end; j++) {
+            printf("%c\n", text[j]);
+        }
+        printf("\n");
+    }
+    free(words_loc.word_loc);
 }

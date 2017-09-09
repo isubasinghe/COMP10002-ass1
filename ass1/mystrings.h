@@ -10,10 +10,11 @@
 // as int ascii_atrophe = ''',
 // is invalid
 #define ASCII_ATROPHE 39
+#define ASCII_LOWER_TO_HIGHER_DIFF 32
 
 #include <stdio.h>
 #include <string.h>
-
+#include <math.h>
 
 
 
@@ -24,14 +25,16 @@ typedef struct {
 } word_loc_t;
 
 typedef struct {
-    word_loc_t * words;
+    word_loc_t * word_loc;
     int size;
 } words_loc_t;
 
 
 int has_prefix(char *, char *, int, int);
 
-double score(int, char *[], char *);
+double score(int, char *[], char *, words_loc_t);
+
+int is_terminator(int c);
 
 words_loc_t get_words(char *);
 
@@ -40,25 +43,66 @@ int has_prefix(char * prefix, char * text, int low, int high) {
     if(strlen(prefix) > high - low + 1) {
         return 0;
     }
+
+    int i;
+    for(i=0; i < strlen(prefix); i++) {
+        int c = text[i + low];
+        if(c >= 'A' && c <= 'Z') {
+            c = c + ASCII_LOWER_TO_HIGHER_DIFF;
+        }
+
+        if (prefix[i] != c) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
-double score(int argc, char *argv[], char * text) {
+double score(int argc, char *argv[], char * text, words_loc_t words_loc) {
+    double sum = 0;
+    words_loc = get_words(text);
+    for(int i=0; i < argc; i++) {
+        int query_occurrences = 0;
+        for(int j = 0; j < words_loc.size; j++) {
+            if(has_prefix(argv[i], text, words_loc.word_loc[j].start, words_loc.word_loc[j].end)) {
+                query_occurrences++;
+            }
+        }
+        //printf("query occurs = %d times\n", query_occurrences);
+        sum += log(1.0 + query_occurrences)/log(2.0);
 
+    }
+
+    if(words_loc.word_loc != NULL) {
+        free(words_loc.word_loc);
+
+    }
+    return sum/(log(8.5 + words_loc.size)/log(2.0));
+
+}
+
+int is_terminator(int c) {
+    char terminators[] = {' ', ASCII_ATROPHE, '.', '-', '*', ',', '(', ')', ';', '\0'};
+    if (strchr(terminators, c) != NULL)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 // remember to free the pointer word_loc_t.words.
 words_loc_t get_words(char * text) {
 
     words_loc_t words_loc;
-    words_loc.words = NULL;
+    words_loc.word_loc = NULL;
     words_loc.size = 0;
 
     if(text == NULL) {
         return words_loc;
     }
 
-    // Allocate 1024 instances of a pointer.
-    words_loc.words = malloc(sizeof(char *) * 1024);
+    // Allocate 1024 instances of a single word_loc_t pseudo object.
+    words_loc.word_loc = malloc(sizeof(word_loc_t) * 1024);
 
     int prevchar = ' ';
     int starting_index = 0;
@@ -67,7 +111,7 @@ words_loc_t get_words(char * text) {
     size_t tlen = strlen(text);
 
     // make sure that the character we are starting off at isn't a word terminator.
-    for(int i=0; prevchar == ' ' || prevchar == ASCII_ATROPHE || prevchar == '.' || prevchar == '-' && i < tlen;i++) {
+    for(int i=0; (prevchar == ' ' || prevchar == ASCII_ATROPHE || prevchar == '.' || prevchar == '-') && i < tlen;i++) {
         prevchar = text[i];
         starting_index = i;
     }
@@ -95,17 +139,18 @@ words_loc_t get_words(char * text) {
             // the end of the word, the character before it must have been the end of the word
             wend = i -1;
 
+            // Allocate 1024 more instances of word_loc_t
             if(words_loc.size%1023 == 0) {
-                words_loc.words = realloc(words_loc.words, sizeof(char *) * (1024 + words_loc.size));
-                if(words_loc.words == NULL) {
+                words_loc.word_loc = realloc(words_loc.word_loc, sizeof(word_loc_t) * (1024 + words_loc.size));
+                if(words_loc.word_loc == NULL) {
                     perror("in function get_words: out of memory");
                     words_loc.size = 0;
                     return words_loc;
                 }
             }
 
-            words_loc.words[words_loc.size].start = wstart;
-            words_loc.words[words_loc.size].end = wend;
+            words_loc.word_loc[words_loc.size].start = wstart;
+            words_loc.word_loc[words_loc.size].end = wend;
 
             words_loc.size++;
 
