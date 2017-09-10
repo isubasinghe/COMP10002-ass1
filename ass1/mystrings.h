@@ -82,7 +82,8 @@ double score(int argc, char *argv[], char * text, words_loc_t words_loc) {
 }
 
 int is_terminator(int c) {
-    char terminators[] = {' ', ASCII_ATROPHE, '.', '-', '*', ',', '(', ')', ';', '\0'};
+    char terminators[] = {' ', ASCII_ATROPHE, '.', '-', '*', ',', '(', ')', ';',
+                          '"',':', '!', '?', '[', ']', '/', '\\', '@', '\0'};
     if (strchr(terminators, c) != NULL)
     {
         return 1;
@@ -107,11 +108,13 @@ words_loc_t get_words(char * text) {
     int prevchar = ' ';
     int starting_index = 0;
 
-    // for a bit of efficiency, the length of the string text is calculated once, instead of every iteration.
+    // for a bit of efficiency, the length of the string text is
+    // calculated once, instead of every iteration.
     size_t tlen = strlen(text);
 
-    // make sure that the character we are starting off at isn't a word terminator.
-    for(int i=0; (prevchar == ' ' || prevchar == ASCII_ATROPHE || prevchar == '.' || prevchar == '-') && i < tlen;i++) {
+    // make sure that the character we are starting
+    // off at isn't a word terminator.
+    for(int i=0; (!is_terminator(prevchar)) && i < tlen;i++) {
         prevchar = text[i];
         starting_index = i;
     }
@@ -127,21 +130,26 @@ words_loc_t get_words(char * text) {
         prevchar = text[i-1];
 
 
-        // check if what the project defines as the terminator for a word is reached.
-        int terminator_met = text[i] == ' ' || text[i] == ASCII_ATROPHE || text[i] == '-' || text[i] == '.' || text[i] == '\0';
-        // furthermore check to make sure that the previous characters weren't a word terminator,
+        // check if what the project defines as the
+        // terminator for a word is reached.
+        int terminator_met = is_terminator(text[i]) || text[i] == '\0';
+        // furthermore check to make sure that the previous
+        // characters weren't a word terminator,
         // this indicates the end of a word.
-        int prevchar_not_terminator = prevchar != ' ' && prevchar != ASCII_ATROPHE && prevchar != '-' && prevchar != '.';
+        int prevchar_not_terminator = !is_terminator(prevchar);
 
         if(terminator_met && prevchar_not_terminator) {
 
             //since we have reached what we have defined to be an indicator for
-            // the end of the word, the character before it must have been the end of the word
+            // the end of the word, the character before
+            // it must have been the end of the word
             wend = i -1;
 
             // Allocate 1024 more instances of word_loc_t
             if(words_loc.size%1023 == 0) {
-                words_loc.word_loc = realloc(words_loc.word_loc, sizeof(word_loc_t) * (1024 + words_loc.size));
+                words_loc.word_loc = realloc(words_loc.word_loc,
+                                             sizeof(word_loc_t) *
+                                                     (1024 + words_loc.size));
                 if(words_loc.word_loc == NULL) {
                     perror("in function get_words: out of memory");
                     words_loc.size = 0;
@@ -160,7 +168,8 @@ words_loc_t get_words(char * text) {
                 wstart = i + 1;
                 wend = i + 1;
             }
-        // check if the character text[i] is not what we defined to be a word terminator and
+        // check if the character text[i] is not what we
+            // defined to be a word terminator and
         // check if the previous character was a word terminator.
         // this indicates a new word has started.
         }else if(!terminator_met && !prevchar_not_terminator) {
