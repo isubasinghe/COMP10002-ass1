@@ -81,6 +81,8 @@ double score(int argc, char *argv[], char * text, words_loc_t words_loc) {
 
 }
 
+
+
 int is_terminator(int c) {
     char terminators[] = {' ', ASCII_ATROPHE, '.', '-', '*', ',', '(', ')', ';',
                           '"',':', '!', '?', '[', ']', '/', '\\', '@', '\0'};

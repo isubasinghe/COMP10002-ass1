@@ -1,0 +1,4 @@
+/home/isitha/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/172.3968.17/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/isitha/Projects/UoM/COMP10002/ass1
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/isitha/Projects/UoM/COMP10002/ass1/cmake-build-debug

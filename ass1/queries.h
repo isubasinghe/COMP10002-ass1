@@ -25,6 +25,12 @@ int is_valid_query(char *);
 void process_lines(int, char *[]);
 
 
+int insert_top5(score_data_t * top5, score_data_t sdata);
+
+
+
+
+
 
 int is_valid_query(char * query) {
     for(unsigned int i=0; i < strlen(query); i++) {
@@ -35,6 +41,7 @@ int is_valid_query(char * query) {
     }
     return 1;
 }
+
 
 
 
@@ -86,6 +93,7 @@ void process_lines(int argc, char * argv[]) {
             free(text);
             continue;
         }
+
         size_t bytes = strlen(text);
         printf("---\n");
         printf("%s\n", text);
@@ -114,10 +122,10 @@ void process_lines(int argc, char * argv[]) {
 
     }
 
-    printf("-------------\n");
+    printf("------------------------------------------------\n");
     for(int i=0 ; i < 5; i++) {
         if(top5[i].text != NULL) {
-            printf("S4: %s %0.2f at line %d\n", top5[i].text, top5[i].score, top5[i].line);
+            printf("S4: %s score = %0.2f at line %d\n", top5[i].text, top5[i].score, top5[i].line);
             free(top5[i].text);
         }
     }

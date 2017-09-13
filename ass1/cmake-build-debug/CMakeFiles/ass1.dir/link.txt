@@ -1,0 +1,1 @@
+/usr/bin/cc  -Wall -g   CMakeFiles/ass1.dir/main.c.o  -o ass1 -lm 

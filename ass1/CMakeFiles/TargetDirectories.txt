@@ -1,0 +1,3 @@
+/home/isitha/Projects/UoM/COMP10002/ass1/CMakeFiles/rebuild_cache.dir
+/home/isitha/Projects/UoM/COMP10002/ass1/CMakeFiles/edit_cache.dir
+/home/isitha/Projects/UoM/COMP10002/ass1/CMakeFiles/ass1.dir
