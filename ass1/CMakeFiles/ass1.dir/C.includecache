@@ -39,6 +39,8 @@ string.h
 -
 math.h
 -
+ctype.h
+-
 
 /home/isitha/Projects/UoM/COMP10002/ass1/queries.h
 stdio.h
