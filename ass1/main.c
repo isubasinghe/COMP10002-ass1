@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #include "queries.h"
-#include "mystrings.h"
 
 
 int main(int argc, char * argv[]) {
@@ -15,12 +14,13 @@ int main(int argc, char * argv[]) {
 
     // indicate if we have detected an error.
     int errors = 0;
-
-    for(int i=1; i < argc; i++) {
-        if(!is_valid_query(argv[i])) {
+    int i;
+    for (i = 1; i < argc; i++) {
+        if (!is_valid_query(argv[i])) {
             printf("S1: %s: invalid character(s) in query\n", argv[i]);
             // we have found an error;
-            errors =1;
+            errors = 1;
+            break;
         }
     }
 
@@ -33,8 +33,7 @@ int main(int argc, char * argv[]) {
     printf("S1: query =");
 
     //print the queries out
-    for(int i=1; i < argc; i++) {
-
+    for(i=1; i < argc; i++) {
         printf(" %s", argv[i]);
     }
     printf("\n");
@@ -42,5 +41,8 @@ int main(int argc, char * argv[]) {
 
 
 
+
     process_lines(argc, argv);
+
+    return 0;
 }

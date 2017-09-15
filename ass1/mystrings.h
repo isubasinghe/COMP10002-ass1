@@ -6,16 +6,13 @@
 #define ASS1_MYSTRINGS_H
 
 
-// I had to define this as
-// as int ascii_atrophe = ''',
-// is invalid
-#define ASCII_ATROPHE 39
+
 #define ASCII_LOWER_TO_HIGHER_DIFF 32
 
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
+#include <ctype.h>
 
 
 
@@ -61,9 +58,11 @@ int has_prefix(char * prefix, char * text, int low, int high) {
 double score(int argc, char *argv[], char * text, words_loc_t words_loc) {
     double sum = 0;
     words_loc = get_words(text);
-    for(int i=0; i < argc; i++) {
+    int i=0;
+    for(i=0; i < argc; i++) {
         int query_occurrences = 0;
-        for(int j = 0; j < words_loc.size; j++) {
+        int j;
+        for(j = 0; j < words_loc.size; j++) {
             if(has_prefix(argv[i], text, words_loc.word_loc[j].start, words_loc.word_loc[j].end)) {
                 query_occurrences++;
             }
@@ -84,10 +83,7 @@ double score(int argc, char *argv[], char * text, words_loc_t words_loc) {
 
 
 int is_terminator(int c) {
-    char terminators[] = {' ', ASCII_ATROPHE, '.', '-', '*', ',', '(', ')', ';',
-                          '"',':', '!', '?', '[', ']', '/', '\\', '@', '\0'};
-    if (strchr(terminators, c) != NULL)
-    {
+    if(!isalnum(c)) {
         return 1;
     }
     return 0;
@@ -116,7 +112,9 @@ words_loc_t get_words(char * text) {
 
     // make sure that the character we are starting
     // off at isn't a word terminator.
-    for(int i=0; (!is_terminator(prevchar)) && i < tlen;i++) {
+    int i;
+
+    for(i=0; (!is_terminator(prevchar)) && i < tlen;i++) {
         prevchar = text[i];
         starting_index = i;
     }
@@ -128,7 +126,7 @@ words_loc_t get_words(char * text) {
     int wend = wstart;
 
 
-    for(int i = starting_index + 1; i < tlen +1; i++) {
+    for(i = starting_index + 1; i < tlen +1; i++) {
         prevchar = text[i-1];
 
 

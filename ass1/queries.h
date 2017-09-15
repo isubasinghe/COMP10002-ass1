@@ -33,7 +33,8 @@ int insert_top5(score_data_t * top5, score_data_t sdata);
 
 
 int is_valid_query(char * query) {
-    for(unsigned int i=0; i < strlen(query); i++) {
+    int i;
+    for(i=0; i < strlen(query); i++) {
 
         if(!isalphal(query[i]) && !isdigit(query[i])) {
             return 0;
@@ -46,7 +47,8 @@ int is_valid_query(char * query) {
 
 
 int insert_top5(score_data_t * top5, score_data_t sdata) {
-    for(int i=0; i < 5; i++) {
+    int i;
+    for(i=0; i < 5; i++) {
         if(top5[i].text == NULL && sdata.score > 0) {
             top5[i].text = sdata.text;
             top5[i].line = sdata.line;
@@ -58,7 +60,7 @@ int insert_top5(score_data_t * top5, score_data_t sdata) {
     double lowest_score = top5[0].score;
     int index = 0;
 
-    for(int i=1; i < 5; i++) {
+    for(i=1; i < 5; i++) {
         if(top5[i].score < lowest_score) {
             lowest_score = top5[i].score;
             index = i;
@@ -123,9 +125,10 @@ void process_lines(int argc, char * argv[]) {
     }
 
     printf("------------------------------------------------\n");
-    for(int i=0 ; i < 5; i++) {
+    int i;
+    for(i=0 ; i < 5; i++) {
         if(top5[i].text != NULL) {
-            printf("S4: %s score = %0.2f at line %d\n", top5[i].text, top5[i].score, top5[i].line);
+            printf("S4: %s score = %0.3f at line %d\n", top5[i].text, top5[i].score, top5[i].line);
             free(top5[i].text);
         }
     }
