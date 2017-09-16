@@ -41,10 +41,16 @@ int is_terminator(int c);
 
 words_loc_t get_words(char *);
 
-int insert_top5(score_data_t * top5, score_data_t sdata);
+int insert_top5(score_data_t * , score_data_t);
 
-// Checks if a character is a lowercase
-// alphabetic character.
+void swap_score_data(score_data_t *, score_data_t *b);
+
+void sort_top5(score_data_t *);
+
+/*
+Checks if a character is a lowercase
+alphabetic character.
+*/
 int isalphal(int c) {
     if(c >= 'a' && c<= 'z') {
         return 1;
@@ -74,28 +80,34 @@ int mygetchar() {
 }
     
     
-// remember to free the return value of this function,
-// if it is not null.
+/* 
+remember to free the return value of this function,
+ if it is not null.
+ */
 char * read_line() {
 
     int c = mygetchar();
 
-    // Our memory allocation cannot be empty,
-    // so we will allocate 1024 bytes per line, then
-    // when we fill this buffer we will add
-    // another 1024 bytes..
+    /*Our memory allocation cannot be empty,
+    so we will allocate 1024 bytes per line, then
+    when we fill this buffer we will add
+    another 1024 bytes.
+    */
     char * text = malloc(sizeof(char)*1024);
 
     if (c == '\n') {
         text[0] = '\n';
+        text[1] = '\0';
         return text;
     }
 
-    // Check if we have enough memory.
+    /* Check if we have enough memory. */
     if(text == NULL) {
         perror("in function read_line: out of memory\n");
-        // return a null pointer, to indicate
-        // we have run out of memory.
+        /*
+        return a null pointer, to indicate
+        we have run out of memory.
+        */
         return NULL;
     }
 
@@ -104,12 +116,14 @@ char * read_line() {
 
     while(c != '\n' && c != EOF) {
 
-        // 1024 bytes have been written since the last time
-        // this statement has been true.
+        /* 
+        1024 bytes have been written since the last time
+        this statement has been true.
+        */
         if(text_index%1023 ==0) {
-            // Add another KB of memory to the pointer text.
+            /* Add another KB of memory to the pointer text. */
             text = realloc(text, sizeof(char) * (text_index+1024));
-            // we have run out of memory.
+            /* we have run out of memory. */
             if(text == NULL) {
                 perror("out of memory\n");
                 return NULL;
@@ -117,27 +131,31 @@ char * read_line() {
 
         }
 
-        // set the next character to what we got
+        /* set the next character to what we got */
         text[text_index] = (char)c;
         text_index++;
 
-        // update what c represents.
+        /* update what c represents. */
         c = mygetchar();
 
     }
 
-    // NULL terminator is added to the string.
+    /* NULL terminator is added to the string. */
     text[text_index] = '\0';
 
-    // If text_index hasn't been incremented, the above loop
-    // has not been entered into, which means that c was either
-    // a '\n' or EOF character, both of which signifies an empty
-    // line.
+    /*
+    If text_index hasn't been incremented, the above loop
+    has not been entered into, which means that c was either
+    a '\n' or EOF character, both of which signifies an empty
+    line.
+    */
 
     if(text_index == 0) {
 
-        // text holds no data, returning this is
-        // pointless, as no data can be gained.
+        /* 
+        text holds no data, returning this is
+        pointless, as no data can be gained.
+        */
         free(text);
         return NULL;
     }
@@ -176,7 +194,6 @@ double score(int argc, char *argv[], char * text, words_loc_t words_loc) {
                 query_occurrences++;
             }
         }
-        //printf("query occurs = %d times\n", query_occurrences);
         sum += log(1.0 + query_occurrences)/log(2.0);
 
     }
@@ -197,7 +214,16 @@ int is_terminator(int c) {
     return 0;
 }
 
-// remember to free the pointer word_loc_t.words.
+/*
+Also although I could have integrated 
+this function and char * read_line into one
+I did not as I prefer a high level of abstraction
+over line count, or a slight increase in performace as
+time goes from O(n) + O(n) (since we are itering twice) 
+to just O(n).
+
+remember to free the pointer word_loc_t.words.
+*/
 words_loc_t get_words(char * text) {
 
     words_loc_t words_loc;
@@ -208,18 +234,22 @@ words_loc_t get_words(char * text) {
         return words_loc;
     }
 
-    // Allocate 1024 instances of a single word_loc_t pseudo object.
+    /* Allocate 1024 instances of a single word_loc_t pseudo object. */
     words_loc.word_loc = malloc(sizeof(word_loc_t) * 1024);
 
     int prevchar = ' ';
     int starting_index = 0;
 
-    // for a bit of efficiency, the length of the string text is
-    // calculated once, instead of every iteration.
+    /*
+    for a bit of efficiency, the length of the string text is
+    calculated once, instead of every iteration.
+    */
     size_t tlen = strlen(text);
 
-    // make sure that the character we are starting
-    // off at isn't a word terminator.
+    /*
+    make sure that the character we are starting
+    off at isn't a word terminator.
+    */
     int i;
 
     for(i=0; (!is_terminator(prevchar)) && i < tlen;i++) {
@@ -228,9 +258,9 @@ words_loc_t get_words(char * text) {
     }
 
 
-    // indicate the start of a word
+    /* indicate the start of a word */
     int wstart = starting_index;
-    // indicate the end of a word
+    /* indicate the end of a word */
     int wend = wstart;
 
 
@@ -238,22 +268,26 @@ words_loc_t get_words(char * text) {
         prevchar = text[i-1];
 
 
-        // check if what the project defines as the
-        // terminator for a word is reached.
+        /* check if what the project defines as the */
+        /* terminator for a word is reached. */
         int terminator_met = is_terminator(text[i]) || text[i] == '\0';
-        // furthermore check to make sure that the previous
-        // characters weren't a word terminator,
-        // this indicates the end of a word.
+        /* 
+        furthermore check to make sure that the previous
+        characters weren't a word terminator,
+        this indicates the end of a word.
+        */
         int prevchar_not_terminator = !is_terminator(prevchar);
 
         if(terminator_met && prevchar_not_terminator) {
 
-            //since we have reached what we have defined to be an indicator for
-            // the end of the word, the character before
-            // it must have been the end of the word
+            /*
+            since we have reached what we have defined to be an indicator for
+            the end of the word, the character before
+            it must have been the end of the word
+            */
             wend = i -1;
 
-            // Allocate 1024 more instances of word_loc_t
+            /* Allocate 1024 more instances of word_loc_t */
             if(words_loc.size%1023 == 0) {
                 words_loc.word_loc = realloc(words_loc.word_loc,
                                              sizeof(word_loc_t) *
@@ -270,18 +304,22 @@ words_loc_t get_words(char * text) {
 
             words_loc.size++;
 
-            // If the character we are at right now isn't the last,
-            // we assume the next character is the start of a new word.
+            /*
+            If the character we are at right now isn't the last,
+            we assume the next character is the start of a new word.
+            */
             if(i < tlen -1) {
                 wstart = i + 1;
                 wend = i + 1;
             }
-        // check if the character text[i] is not what we
-            // defined to be a word terminator and
-        // check if the previous character was a word terminator.
-        // this indicates a new word has started.
+        /* 
+        check if the character text[i] is not what we
+        defined to be a word terminator and
+        check if the previous character was a word terminator.
+        this indicates a new word has started.
+        */
         }else if(!terminator_met && !prevchar_not_terminator) {
-            // index starting point for the new word.
+            /* index starting point for the new word. */
             wstart = i;
         }
 
@@ -310,9 +348,11 @@ int insert_top5(score_data_t * top5, score_data_t sdata) {
             lowest_score = top5[i].score;
             index = i;
         }
+        
     }
 
-    if(sdata.score > lowest_score) {
+    if(sdata.score >= lowest_score) {
+        
         top5[index].text = sdata.text;
         top5[index].line = sdata.line;
         top5[index].score = sdata.score;
@@ -322,13 +362,49 @@ int insert_top5(score_data_t * top5, score_data_t sdata) {
     return 0;
 }
 
+void swap_score_data(score_data_t *a, score_data_t *b) {
+    score_data_t tmp;
+    tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+
+/* 
+Adapted from Dr. Alistair Moffat's book containing an 
+insertion sort algorithm, but is significantly different,
+allowing a second parameter to be sorted by.
+*/
+void sort_top5(score_data_t * top5) {
+    int i = 1;
+    for(i = 1; i < 5; i++) {
+        int j = i -1;
+        for(j=i-1; j>= 0 && (top5[j+1].score > top5[j].score ||
+             ((top5[j+1].score == top5[j].score) && 
+                top5[j+1].line < top5[j].line) ) ; j--) {
+
+            if(top5[j+1].text == NULL || top5[j].text == NULL) {
+                continue;
+            }
+
+            if(top5[j+1].score == top5[j].score) {
+                if(top5[j+1].line < top5[j].line) {
+                    swap_score_data(&top5[j], &top5[j+1]);
+                    continue;
+                }
+            }
+            swap_score_data(&top5[j], &top5[j+1]);
+        }
+    }
+}
+
 void process_lines(int argc, char * argv[]) {
     
     score_data_t * top5 = malloc(sizeof(score_data_t) * 5);
 
     char * text = NULL;
 
-    // line counter
+    /* line counter */
     unsigned int linec = 1;
 
     while((text = read_line())!= NULL) {
@@ -367,10 +443,14 @@ void process_lines(int argc, char * argv[]) {
     }
 
     printf("------------------------------------------------\n");
+
+    sort_top5(top5);
     int i;
     for(i=0 ; i < 5; i++) {
         if(top5[i].text != NULL) {
-            printf("S4: %s score = %0.3f at line %d\n", top5[i].text, top5[i].score, top5[i].line);
+            printf("S4: line = %d, score = %0.3f\n", top5[i].line, top5[i].score);
+            printf("%s\n", top5[i].text);
+            printf("---\n");
             free(top5[i].text);
         }
     }
@@ -382,33 +462,33 @@ void process_lines(int argc, char * argv[]) {
 
 
 int main(int argc, char * argv[]) {
-    // No queries were given, since q = arg -1
+    /* No queries were given, since q = arg -1 */
     if(argc == 1) {
         printf("S1: No query specified, must provide at least one word\n");
         return 0;
     }
 
-    // indicate if we have detected an error.
+    /* indicate if we have detected an error. */
     int errors = 0;
     int i;
     for (i = 1; i < argc; i++) {
         if (!is_valid_query(argv[i])) {
             printf("S1: %s: invalid character(s) in query\n", argv[i]);
-            // we have found an error;
+            /* we have found an error; */
             errors = 1;
             break;
         }
     }
 
 
-    // error was detected so we don't process the input, and exit the program.
+    /* error was detected so we don't process the input, and exit the program. */
     if(errors) {
         return -1;
     }
 
     printf("S1: query =");
 
-    //print the queries out
+    /* print the queries out */
     for(i=1; i < argc; i++) {
         printf(" %s", argv[i]);
     }

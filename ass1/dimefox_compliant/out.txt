@@ -11160,8 +11160,18 @@ subscribe to our email newsletter to hear about new eBooks.
 S2: line = 3735, bytes = 59, words = 10
 S3: line = 3735, score = 0.000
 ------------------------------------------------
-S4: '--so long as I get SOMEWHERE,' Alice added as an explanation. score = 0.467 at line 1485
-S4: her knowledge of history, Alice had no very clear notion how long ago score = 0.452 at line 400
-S4: 'A barrowful of WHAT?' thought Alice; but she had not long to doubt, score = 0.452 at line 877
-S4: 'It IS a long tail, certainly,' said Alice, looking down with wonder at score = 0.452 at line 587
-S4: or Longitude I've got to?' (Alice had no idea what Latitude was, or score = 0.668 at line 99
+S4: line = 99, score = 0.668
+or Longitude I've got to?' (Alice had no idea what Latitude was, or
+---
+S4: line = 1485, score = 0.467
+'--so long as I get SOMEWHERE,' Alice added as an explanation.
+---
+S4: line = 400, score = 0.452
+her knowledge of history, Alice had no very clear notion how long ago
+---
+S4: line = 587, score = 0.452
+'It IS a long tail, certainly,' said Alice, looking down with wonder at
+---
+S4: line = 877, score = 0.452
+'A barrowful of WHAT?' thought Alice; but she had not long to doubt,
+---
