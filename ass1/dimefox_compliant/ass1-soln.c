@@ -96,12 +96,6 @@ char * read_line() {
     */
     char * text = malloc(sizeof(char)*READ_SIZE);
 
-    if (c == '\n') {
-        text[0] = '\n';
-        text[1] = '\0';
-        return text;
-    }
-
     /* Check if we have enough memory. */
     if(text == NULL) {
         perror("in function read_line: out of memory\n");
@@ -111,6 +105,14 @@ char * read_line() {
         */
         return NULL;
     }
+
+    if (c == '\n') {
+        text[0] = '\n';
+        text[1] = '\0';
+        return text;
+    }
+
+
 
     int text_index = 0;
 
@@ -229,7 +231,7 @@ words_loc_t get_words(char * text) {
     /* Allocate READ_SIZE instances of a single word_loc_t pseudo object. */
     words_loc.word_loc = malloc(sizeof(word_loc_t) * READ_SIZE);
     if(words_loc.word_loc == NULL) {
-        perror("in function get_words: out of memory");
+        perror("in function get_words: out of memory\n");
         return words_loc;
     }
 
@@ -287,9 +289,9 @@ words_loc_t get_words(char * text) {
             if(words_loc.size%(READ_SIZE) == 0) {
                 words_loc.word_loc = realloc(words_loc.word_loc,
                                              sizeof(word_loc_t) *
-                                                     (READ_SIZE + words_loc.size));
+                                                (READ_SIZE + words_loc.size));
                 if(words_loc.word_loc == NULL) {
-                    perror("in function get_words: out of memory");
+                    perror("in function get_words: out of memory\n");
                     words_loc.size = 0;
                     return words_loc;
                 }
@@ -362,8 +364,8 @@ void swap_score_data(score_data_t *a, score_data_t *b) {
 }
 
 /* 
-Adapted from Dr. Alistair Moffat's book containing an 
-insertion sort algorithm, but is significantly different,
+Adapted from Dr. Alistair Moffat'sinsertion sort algorithm, 
+but is significantly different,
 allowing a second parameter to be sorted by.
 */
 void sort_top5(score_data_t * top5) {
@@ -444,7 +446,8 @@ void process_lines(int argc, char * argv[]) {
     int i;
     for(i=0 ; i < MAX_STORE_LINES; i++) {
         if(top5[i].text != NULL) {
-            printf("S4: line = %d, score = %0.3f\n", top5[i].line, top5[i].score);
+            printf("S4: line = %d, score = %0.3f\n", 
+                top5[i].line, top5[i].score);
             printf("%s\n", top5[i].text);
             printf("---\n");
             /* the char array(s) text that we did not free is now freed */
