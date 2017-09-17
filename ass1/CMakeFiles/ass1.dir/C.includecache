@@ -11,8 +11,16 @@ stdio.h
 -
 queries.h
 /home/isitha/Projects/UoM/COMP10002/ass1/queries.h
-mystrings.h
-/home/isitha/Projects/UoM/COMP10002/ass1/mystrings.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+ctype.h
+-
 
 /home/isitha/Projects/UoM/COMP10002/ass1/myctypes.h
 string.h

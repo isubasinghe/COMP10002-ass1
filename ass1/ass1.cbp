@@ -87,18 +87,6 @@
 		<Unit filename="/home/isitha/Projects/UoM/COMP10002/ass1/main.c">
 			<Option target="ass1"/>
 		</Unit>
-		<Unit filename="/home/isitha/Projects/UoM/COMP10002/ass1/myctypes.h">
-			<Option target="ass1"/>
-		</Unit>
-		<Unit filename="/home/isitha/Projects/UoM/COMP10002/ass1/mystdio.h">
-			<Option target="ass1"/>
-		</Unit>
-		<Unit filename="/home/isitha/Projects/UoM/COMP10002/ass1/mystrings.h">
-			<Option target="ass1"/>
-		</Unit>
-		<Unit filename="/home/isitha/Projects/UoM/COMP10002/ass1/queries.h">
-			<Option target="ass1"/>
-		</Unit>
 		<Unit filename="/home/isitha/Projects/UoM/COMP10002/ass1/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
